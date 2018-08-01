@@ -1,7 +1,6 @@
 ---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: This workload template deploys an ASG behind an ELB load balancer in
-  two private subnets. The cluster is configured to use an S3 bucket for storage **WARNING**
+Description: This template deploys Liquidware Stratsphere UX. **WARNING**
   This template creates EC2 instances and related resources. You will be billed for
   the AWS resources used if you create a stack from this template.
 Metadata:
@@ -186,6 +185,38 @@ Rules:
         - Fn::RefAll: AWS::EC2::VPC::Id
       AssertDescription: All subnets must in the VPC
 Mappings:
+  StratUXAMIRegionMap:
+    us-east-1: 
+      StratUXAMI: ami-b9fb01c4
+    us-east-2:
+      StratUXAMI: ami-65310700
+    ap-northeast-1:
+      StratUXAMI: ami-f290de94
+    ap-northeast-2:
+      StratUXAMI: ami-8cf15de2
+    ap-south-1:
+      StratUXAMI: ami-911f46fe
+    ap-southeast-1:
+      StratUXAMI: ami-f7e8bf8b
+    ap-southeast-2:
+      StratUXAMI: ami-5c24e43e
+    ca-central-1:
+      StratUXAMI: ami-2e60e74a
+    eu-central-1:
+      StratUXAMI: ami-77711818
+    eu-west-1:
+      StratUXAMI: ami-59480420
+    eu-west-2:
+      StratUXAMI: ami-2d2ccb4a
+    eu-west-3:
+      StratUXAMI: ami-ac50e6d1
+    sa-east-1:
+      StratUXAMI: ami-1692d87a
+    us-west-1:
+      StratUXAMI: ami-642d3804
+    us-west-2:
+      StratUXAMI: ami-a6f761de
+
   AWSAMIRegionMap:
     AMI:
       AMZNLINUXHVM: amzn-ami-hvm-2018.03.0.20180622-x86_64-gp2
