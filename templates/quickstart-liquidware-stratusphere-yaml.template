@@ -1,0 +1,305 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: This template deploys Liquidware Stratsphere UX. **WARNING**
+  This template creates EC2 instances and related resources. You will be billed for
+  the AWS resources used if you create a stack from this template.
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+    - Label:
+        default: Network Configuration
+      Parameters:
+      - VPCID
+      - PrivateSubnet1ID
+      - PrivateSubnet2ID
+      - PublicSubnet1ID
+      - PublicSubnet2ID
+    - Label:
+        default: Stratsphere UX EC2 Configuration
+      Parameters:
+      - KeyPairName
+      - StratUXInstanceType
+    - Label:
+        default: AWS Quick Start Configuration
+      Parameters:
+      - QSS3BucketName
+      - QSS3KeyPrefix
+    ParameterLabels:
+      BastionSecurityGroupID:
+        default: Bastion Security Group ID
+      KeyPairName:
+        default: SSH Key Name
+      PrivateSubnet1ID:
+        default: Private Subnet 1 ID
+      PrivateSubnet2ID:
+        default: Private Subnet 2 ID
+      PublicSubnet1ID:
+        default: Public Subnet 1 ID
+      PublicSubnet2ID:
+        default: Public Subnet 2 ID
+      QSS3BucketName:
+        default: Quick Start S3 Bucket Name
+      QSS3KeyPrefix:
+        default: Quick Start S3 Key Prefix
+      S3BucketName:
+        default: S3 Bucket Name
+      VPCID:
+        default: VPC ID
+Parameters:
+  BastionSecurityGroupID:
+    Description: ID of the bastion host security group to enable SSH connections (e.g.,
+      sg-7f16e910)
+    Type: AWS::EC2::SecurityGroup::Id
+  KeyPairName:
+    Description: Name of an existing EC2 key pair. All instances will launch with
+      this key pair.
+    Type: AWS::EC2::KeyPair::KeyName
+  PrivateSubnet1ID:
+    Description: ID of private subnet 1 in Availability Zone 1 for the Workload (e.g.,
+      subnet-a0246dcd)
+    Type: AWS::EC2::Subnet::Id
+  PrivateSubnet2ID:
+    Description: ID of private subnet 2 in Availability Zone 2 for the Workload (e.g.,
+      subnet-b1f432cd)
+    Type: AWS::EC2::Subnet::Id
+  PublicSubnet1ID:
+    Description: ID of public subnet 1 in Availability Zone 1 for the ELB load balancer
+      (e.g., subnet-9bc642ac)
+    Type: AWS::EC2::Subnet::Id
+  PublicSubnet2ID:
+    Description: ID of public subnet 2 in Availability Zone 2 for the ELB load balancer
+      (e.g., subnet-e3246d8e)
+    Type: AWS::EC2::Subnet::Id
+  QSS3BucketName:
+    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    ConstraintDescription: Quick Start bucket name can include numbers, lowercase
+      letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
+      (-).
+    Default: aws-quickstart
+    Description: S3 bucket name for the Quick Start assets. This string can include
+      numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start
+      or end with a hyphen (-).
+    Type: String
+  QSS3KeyPrefix:
+    AllowedPattern: ^[0-9a-zA-Z-/]*$
+    ConstraintDescription: Quick Start key prefix can include numbers, lowercase letters,
+      uppercase letters, hyphens (-), and forward slash (/).
+    Default: quickstart-liquidware-stratusphere/
+    Description: S3 key prefix for the Quick Start assets. Quick Start key prefix
+      can include numbers, lowercase letters, uppercase letters, hyphens (-), and
+      forward slash (/).
+    Type: String
+  VPCID:
+    Description: ID of your existing VPC for deployment
+    Type: AWS::EC2::VPC::Id
+  VPCCIDR:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\\/(1[6-9]|2[0-8]))$
+    ConstraintDescription": CIDR block parameter must be in the form x.x.x.x/16-28
+    Default: 10.0.0.0/16
+    Description: CIDR block for the VPC
+    Type: String
+  StratUXInstanceType:
+    AllowedValues:
+    - m4.large
+    - m4.xlarge
+    - m4.2xlarge
+    - m4.4xlarge
+    - m4.10xlarge
+    - m5.large
+    - m5.xlarge
+    - m5.2xlarge
+    - m5.4xlarge
+    - m5.12xlarge
+    - c4.large
+    - c4.xlarge
+    - c4.2xlarge
+    - c4.4xlarge
+    - c4.8xlarge
+    - c5.large
+    - c5.xlarge
+    - c5.2xlarge
+    - c5.4xlarge
+    - c5.9xlarge
+    - r5.large
+    - r5.xlarge
+    - r5.2xlarge
+    - r5.4xlarge
+    - r5.12xlarge
+    - r4.large
+    - r4.xlarge
+    - r4.2xlarge
+    - r4.4xlarge
+    - r4.8xlarge
+    ConstraintDescription: Must contain valid instance type
+    Default: m5.large
+    Description: Type of EC2 instance for the Workload instances
+    Type: String
+Rules:
+  KeyPairsNotEmpty:
+    Assertions:
+    - Assert:
+        Fn::Not:
+        - Fn::EachMemberEquals:
+          - Fn::RefAll: AWS::EC2::KeyPair::KeyName
+          - ''
+      AssertDescription: All key pair parameters must not be empty
+  SubnetsInVPC:
+    Assertions:
+    - Assert:
+        Fn::EachMemberIn:
+        - Fn::ValueOfAll:
+          - AWS::EC2::Subnet::Id
+          - VpcId
+        - Fn::RefAll: AWS::EC2::VPC::Id
+      AssertDescription: All subnets must in the VPC
+Mappings:
+  StratUXAMIRegionMap:
+    us-east-1: 
+      StratUXAMI: ami-b9fb01c4
+    us-east-2:
+      StratUXAMI: ami-65310700
+    ap-northeast-1:
+      StratUXAMI: ami-f290de94
+    ap-northeast-2:
+      StratUXAMI: ami-8cf15de2
+    ap-south-1:
+      StratUXAMI: ami-911f46fe
+    ap-southeast-1:
+      StratUXAMI: ami-f7e8bf8b
+    ap-southeast-2:
+      StratUXAMI: ami-5c24e43e
+    ca-central-1:
+      StratUXAMI: ami-2e60e74a
+    eu-central-1:
+      StratUXAMI: ami-77711818
+    eu-west-1:
+      StratUXAMI: ami-59480420
+    eu-west-2:
+      StratUXAMI: ami-2d2ccb4a
+    eu-west-3:
+      StratUXAMI: ami-ac50e6d1
+    sa-east-1:
+      StratUXAMI: ami-1692d87a
+    us-west-1:
+      StratUXAMI: ami-642d3804
+    us-west-2:
+      StratUXAMI: ami-a6f761de
+Resources:
+  StratUXRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - ec2.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: /
+      Policies:
+      - PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Action:
+            - s3:GetObject
+            Resource:
+              Fn::Sub: arn:aws:s3:::${QSS3BucketName}/${QSS3KeyPrefix}*
+            Effect: Allow
+        PolicyName: aws-quick-start-s3-policy
+  StratUXProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: /
+      Roles:
+      - Ref: StratUXRole
+  DLMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+              - dlm.amazonaws.com
+            Action:
+            - sts:AssumeRole
+    Path: /
+    Policies:
+      - PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - 
+              Effect: Allow
+              Action:
+                - ec2:CreateSnapshot
+                - ec2:DeleteSnapshot
+                - ec2:DescribeVolumes
+                - ec2:DescribeSnapshots
+              Resource: "*"
+            -
+              Effect: Allow
+              Action:
+                - ec2:CreateTags
+              Resource: "arn:aws:ec2:*::snapshot/*" 
+        PolicyName: aws-dlm-policy
+    RoleName: AWSDataLifecycleManagerQSRole    
+  StratUXSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow access to the Workload instances
+      VpcId:
+        Ref: VPCID
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: '443'
+        ToPort: '443'
+        SourceSecurityGroupId:
+          Ref: VPCCIDR
+      - IpProtocol: tcp
+        FromPort: '22'
+        ToPort: '22'
+        SourceSecurityGroupId:
+          Ref: VPCCIDR
+  StratUXInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      IamInstanceProfile: 
+        Ref: StratUXProfile
+      ImageId: !FindInMap [StratUXAMIRegionMap, !Ref "AWS::Region", "StratUXAMI"]
+      InstanceType: !Ref StratUXInstanceType
+      KeyName: !Ref KeyPairName
+      SecurityGroupIds: !Ref StratUXSecurityGroup
+      SubnetId: !Ref PrivateSubnet1ID
+      Tags: 
+        - Key: Name
+          Value: StratusphereUXInstance
+  StratUXAlarmInstanceRecovery:
+    DependsOn: StratUXInstance
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: Trigger a recovery when instance status check fails for 10 consecutive minutes.
+      Namespace: AWS/EC2
+      MetricName: StatusCheckFailed_System
+      Statistic: Minimum
+      Period: 60
+      EvaluationPeriods: 10
+      ComparisonOperator: GreaterThanThreshold
+      Threshold: 0
+      AlarmActions:
+        - Fn::Join: ["", ["arn:aws:automate:", !Ref AWS::Region,"ec2:recover"]]
+      Dimensions:
+         - Name: InstanceId
+           Value: !Ref StratUXInstance
+Outputs:
+  StratusphereUXDNS:
+    Description: StratusphereUX Priavte DNS Name
+    Value:
+      Fn::GetAtt:
+      - StratusphereUXInstance
+      - PrivateDnsName
+  StratusphereUXIP:
+    Description: StratusphereUX Priavte IP
+    Value:
+      Fn::GetAtt:
+      - StratusphereUXInstance
+      - PrivateIp    
