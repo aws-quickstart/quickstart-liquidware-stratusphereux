@@ -24,14 +24,13 @@ Metadata:
       Parameters:
       - QSS3BucketName
       - QSS3KeyPrefix
-    - Label:
-        default: Snapshot Configuration
-      Parameters:
-      - DLMLambdaFile
-      - RetentionTime
-      - ScheduleName
-      - ScheduleTime
-      - ScheduleInterval
+#    - Label:
+#        default: Snapshot Configuration
+#      Parameters:
+#      - RetentionTime
+#      - ScheduleName
+#      - ScheduleTime
+#      - ScheduleInterval
     ParameterLabels:
       KeyPairName:
         default: SSH Key Name
@@ -86,29 +85,29 @@ Parameters:
       can include numbers, lowercase letters, uppercase letters, hyphens (-), and
       forward slash (/).
     Type: String
-  DLMLambdaFile:
-    AllowedPattern: ^[0-9a-zA-Z-/_'!().*]*$
-    Default: scripts/create_dlm_policy.zip
-    Description: S3 Location of Lambda Function that will create DLM Policy for StratusphereUX
-    Type: String
-  RetentionTime:
-    Default: 7
-    Description: Number of Snapshots to retain, this will also depend on Schedule Interval. 
-      For Example if you want to retain 7 Days of snapshots with 24 Hour interval this value will be 7 but 
-      12 hours interval it will be 14. 
-    Type: Number
-  ScheduleTime:
-    Default: 00:00
-    Description: The time the snapshot will occur, within one hour. 
-    Type: String
-  ScheduleName:
-    Default: stratusphereux_backup
-    Description: Name of the Amazon Data Life Cyle schedule for StratusphereUX.
-    Type: String  
-  ScheduleInterval:
-    Default: 24
-    Description: Interval in Hours between snapshots, must be a number and only 12 and 24 are valid options. 
-    Type: Number
+#  DLMLambdaFile:
+#    AllowedPattern: ^[0-9a-zA-Z-/_'!().*]*$
+#    Default: scripts/create_dlm_policy.zip
+#    Description: S3 Location of Lambda Function that will create DLM Policy for StratusphereUX
+#    Type: String
+#  RetentionTime:
+#    Default: 7
+#    Description: Number of Snapshots to retain, this will also depend on Schedule Interval. 
+#      For Example if you want to retain 7 Days of snapshots with 24 Hour interval this value will be 7 but 
+#      12 hours interval it will be 14. 
+#    Type: Number
+#  ScheduleTime:
+#    Default: 00:00
+#    Description: The time the snapshot will occur, within one hour. 
+#    Type: String
+#  ScheduleName:
+#    Default: stratusphereux_backup
+#    Description: Name of the Amazon Data Life Cyle schedule for StratusphereUX.
+#    Type: String  
+#  ScheduleInterval:
+#    Default: 24
+#    Description: Interval in Hours between snapshots, must be a number and only 12 and 24 are valid options. 
+#    Type: Number
   VPCID:
     Description: ID of your existing VPC for deployment
     Type: AWS::EC2::VPC::Id
@@ -225,6 +224,14 @@ Resources:
               Fn::Sub: arn:aws:s3:::${QSS3BucketName}/${QSS3KeyPrefix}*
             Effect: Allow
         PolicyName: aws-quick-start-s3-policy
+      - PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Action:
+            - dlm:CreateLifecyclePolicy
+            Resource: '*'
+            Effect: Allow
+        PolicyName: aws-quick-start-dlm-create-policy
   StratUXProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
@@ -260,7 +267,7 @@ Resources:
               Action:
                 - ec2:CreateTags
               Resource: "arn:aws:ec2:*::snapshot/*" 
-        PolicyName: aws-dlm-policy
+        PolicyName: aws-quick-start-dlm-policy
   StratUXSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -296,6 +303,7 @@ Resources:
     DependsOn: StratUXInstance
     Type: AWS::CloudWatch::Alarm
     Properties:
+      ActionsEnabled: true
       AlarmDescription: Trigger a recovery when instance status check fails for 10 consecutive minutes.
       Namespace: AWS/EC2
       MetricName: StatusCheckFailed_System
@@ -305,7 +313,7 @@ Resources:
       ComparisonOperator: GreaterThanThreshold
       Threshold: 0
       AlarmActions:
-        - Fn::Join: ['', ['arn:aws:automate:', !Ref 'AWS::Region', 'ec2:recover']]
+        - Fn::Join: ['', ['arn:aws:automate:', !Ref 'AWS::Region', ':ec2:recover']]
       Dimensions:
          - 
            Name: InstanceId
