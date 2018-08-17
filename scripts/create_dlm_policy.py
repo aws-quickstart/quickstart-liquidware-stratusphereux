@@ -4,7 +4,7 @@ import requests
 import boto3
 from sys import argv
 
-execution_role, target_tag_key, target_tag_value, schedule_name, snapshot_interval, schedule_time, retention = argv
+script, execution_role, target_tag_key, target_tag_value, schedule_name, snapshot_interval, schedule_time, retention = argv
 
 dlm_client = boto3.client('dlm')
 
