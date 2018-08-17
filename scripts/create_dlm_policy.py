@@ -1,5 +1,7 @@
 # This script creates an Amazon Data Lifecycle Management Schedule 
 
+import requests
+import json
 import boto3
 from sys import argv
 
@@ -7,7 +9,7 @@ script, execution_role, target_tag_key, target_tag_value, schedule_name, snapsho
 
 supported_regions = ['us-east-1','us-west-2','eu-west-1']
 
-aws_region = boto3.session.Session().region_name
+aws_region = json.loads(requests.get('http://169.254.169.254/latest/dynamic/instance-identity/document').content)['region']
 
 def create_dlm_policy(execution_role, target_tag_key, target_tag_value, schedule_name, snapshot_interval, schedule_time, retention):
     dlm_client = boto3.client('dlm',region_name = aws_region)
