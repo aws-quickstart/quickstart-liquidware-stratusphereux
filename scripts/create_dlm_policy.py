@@ -1,6 +1,7 @@
 # This script creates an Amazon Data Lifecycle Management Schedule 
 
 import requests
+import json
 import boto3
 from sys import argv
 
@@ -8,12 +9,10 @@ script, execution_role, target_tag_key, target_tag_value, schedule_name, snapsho
 
 supported_regions = ['us-east-1','us-west-2','eu-west-1']
 
-response = requests.get('http://169.254.169.254/latest/dynamic/instance-identity/document')
-aws_region = response['region']
-print aws_region
+aws_region = json.loads(requests.get('http://169.254.169.254/latest/dynamic/instance-identity/document').content)['region']
 
 def create_dlm_policy(execution_role, target_tag_key, target_tag_value, schedule_name, snapshot_interval, schedule_time, retention):
-    dlm_client = boto3.client('dlm', region = aws_region)
+    dlm_client = boto3.client('dlm',region_name = aws_region)
 
     # Creates the Amazon Data Lifecycle Management Schedule for the Workload Specified in the CFN Script
     create_policy = dlm_client.create_lifecycle_policy(
@@ -34,14 +33,14 @@ def create_dlm_policy(execution_role, target_tag_key, target_tag_value, schedule
                 {
                     'Name': schedule_name,
                     'CreateRule': {
-                        'Interval': snapshot_interval,
+                        'Interval': int(snapshot_interval),
                         'IntervalUnit': 'HOURS',
                         'Times': [
                             schedule_time,
                         ]
                     },
                     'RetainRule': {
-                        'Count': retention
+                        'Count': int(retention)
                         }
                 },
             ]
