@@ -1,9 +1,6 @@
 # This script creates an Amazon Data Lifecycle Management Schedule 
 
 import requests, json, argparse, boto3
-from sys import argv
-
-script, execution_role, target_tag_key, target_tag_value, snapshot_interval, schedule_time, retention = argv
 
 supported_regions = ['us-east-1','us-west-2','eu-west-1']
 
