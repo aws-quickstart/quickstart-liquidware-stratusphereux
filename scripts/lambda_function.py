@@ -9,17 +9,11 @@ def lambda_handler(event, context):
     from botocore.vendored import requests
     import json
     
-    non_supported_regions = []
+    non_supported_regions = ['ap-northeast-3','eu-west-3']
 
     SUCCESS = "SUCCESS"
     FAILED = "FAILED"
-    
-    execution_role = event['ResourceProperties']['ExecutionRole']
-    target_tag_key = event['ResourceProperties']['TargetTags']['Key']
-    target_tag_value = event['ResourceProperties']['TargetTags']['Value']
-    retention = event['ResourceProperties']['Retention']
-    snapshot_interval = event['ResourceProperties']['ScheduleInterval']
-    schedule_time = event['ResourceProperties']['ScheduleTime']
+    NONSUPPORTED = "DLM not available in Region"
 
     # This function helps generate the response back to the CFN Custom Resource
     def send(event, context, responseStatus, responseData, physicalResourceId=None, noEcho=False):
@@ -54,38 +48,54 @@ def lambda_handler(event, context):
         except Exception as e:
             print("send(..) failed executing requests.put(..): " + str(e))
     
-    # Creates the Amazon Data Lifecycle Management Schedule for the Workload Specified in the CFN Script
-    if 
-    create_policy = dlm_client.create_lifecycle_policy(
-        ExecutionRoleArn = execution_role,
-        Description ='DLM Schedule Created for {} by Quick Start'.format(target_tag_value),
-        State ='ENABLED',
-        PolicyDetails = {
-            'ResourceTypes': [
-                'VOLUME',
-            ],
-            'TargetTags': [
-                {
-                    'Key': target_tag_key,
-                    'Value': target_tag_value
-                },
-            ],
-            'Schedules': [
-                {
-                    'Name': '{} DLM Schedule'.format(target_tag_value),
-                    'CreateRule': {
-                        'Interval': int(snapshot_interval),
-                        'IntervalUnit': 'HOURS',
-                        'Times': [
-                            schedule_time,
-                        ]
-                    },
-                    'RetainRule': {
-                        'Count': int(retention)
-                        }
-                },
-            ]
-        }
-    )
     
-    send(event, context, SUCCESS, create_policy)
+    # Creates the Amazon Data Lifecycle Management Schedule for the Workload Specified in the CFN Script
+    def create_dlm_policy(event):
+        execution_role = event['ResourceProperties']['ExecutionRole']
+        target_tag_key = event['ResourceProperties']['TargetTags']['Key']
+        target_tag_value = event['ResourceProperties']['TargetTags']['Value']
+        retention = event['ResourceProperties']['Retention']
+        snapshot_interval = event['ResourceProperties']['ScheduleInterval']
+        schedule_time = event['ResourceProperties']['ScheduleTime']
+        aws_region = event['ResourceProperties']['AWSRegion']
+
+        create_policy = dlm_client.create_lifecycle_policy(
+            ExecutionRoleArn = execution_role,
+            Description ='DLM Schedule Created for {} by Quick Start'.format(target_tag_value),
+            State ='ENABLED',
+            PolicyDetails = {
+                'ResourceTypes': [
+                    'VOLUME',
+                ],
+                'TargetTags': [
+                    {
+                        'Key': target_tag_key,
+                        'Value': target_tag_value
+                    },
+                ],
+                'Schedules': [
+                    {
+                        'Name': '{} DLM Schedule'.format(target_tag_value),
+                        'CreateRule': {
+                            'Interval': int(snapshot_interval),
+                            'IntervalUnit': 'HOURS',
+                            'Times': [
+                                schedule_time,
+                            ]
+                        },
+                        'RetainRule': {
+                            'Count': int(retention)
+                            }
+                    },
+                ]
+            }
+        )
+        send(event, context, SUCCESS, create_policy)
+    
+    if aws_region not in non_supported_regions:
+        try:
+            create_dlm_policy(execution_role, target_tag_key, )
+        except Exception as exc:
+            send(event, context, FAILED , exc)
+    else:
+        send(event, context, FAILED, NONSUPPORTED)

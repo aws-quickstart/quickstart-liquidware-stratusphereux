@@ -87,7 +87,7 @@ Parameters:
     Type: String
   QSS3KeyPrefix:
     AllowedPattern: ^[0-9a-zA-Z-/]*$
-    Default: quickstart-liquidware-stratusphere/
+    Default: quickstart-aws-workspaces-liquidware/
     Description: S3 key prefix for the Quick Start assets. Quick Start key prefix
       can include numbers, lowercase letters, uppercase letters, hyphens (-), and
       forward slash (/).
@@ -213,28 +213,20 @@ Resources:
         - Effect: Allow
           Principal:
             Service:
-            - ec2.amazonaws.com
+              - ec2.amazonaws.com
           Action:
-          - sts:AssumeRole
+            - sts:AssumeRole
       Path: /
       Policies:
       - PolicyDocument:
           Version: '2012-10-17'
           Statement:
           - Action:
-            - s3:GetObject
+              - s3:GetObject
             Resource:
               Fn::Sub: arn:aws:s3:::${QSS3BucketName}/${QSS3KeyPrefix}*
             Effect: Allow
         PolicyName: aws-quick-start-s3-policy
-      - PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-          - Action:
-            - dlm:CreateLifecyclePolicy
-            Resource: '*'
-            Effect: Allow
-        PolicyName: aws-quick-start-dlm-create-policy
   StratUXProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
@@ -249,9 +241,9 @@ Resources:
           - Effect: Allow
             Principal:
               Service:
-              - dlm.amazonaws.com
+                - dlm.amazonaws.com
             Action:
-            - sts:AssumeRole
+              - sts:AssumeRole
       Path: /
       Policies:
       - PolicyDocument:
@@ -271,6 +263,50 @@ Resources:
                 - ec2:CreateTags
               Resource: "arn:aws:ec2:*::snapshot/*" 
         PolicyName: aws-quick-start-dlm-policy
+  LambdaDLMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+      - PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - 
+              Effect: Allow
+              Action:
+                - dlm:CreateLifecyclePolicy
+                - dlm:UpdateLifecyclePolicy
+                - dlm:GetLifecyclePolicies
+                - dlm:GetLifecyclePolicy
+              Resource: "*"
+            -
+              Effect: Allow
+              Action:
+                - iam:PassRole
+              Resource: !GetAtt DLMRole.Arn
+        PolicyName: aws-quick-start-dlm-create-policy
+  CreateDLMLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: !Ref QSS3BucketName
+        S3Key: !Join
+        - ''
+        - - !Ref QSS3KeyPrefix
+          - !Ref DLMLambdaFile
+        Handler: lam
+        Role: !GetAtt LambdaDLMRole.Arn
+
   StratUXSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -321,7 +357,10 @@ Resources:
          - 
            Name: InstanceId
            Value: !Ref StratUXInstance
-  
+  CreateDLMPolicy:
+    Type: Custom::CreateDLMPolicy
+    Properties: 
+      ServiceToken:
 Outputs:
   StratusphereUXDNS:
     Description: StratusphereUX Priavte DNS Name
