@@ -1,0 +1,19 @@
+{
+  "StackId": "arn:aws:cloudformation:us-east-1:EXAMPLE/stack-name/guid",
+  "ResponseURL": "http://pre-signed-S3-url-for-response",
+  "ResourceProperties": {
+    "ExecutionRole": "arn:aws:iam::024357338510:role/AWSDataLifecycleManagerDefaultRole",
+    "TargetTags": {
+      "Key": "Name",
+      "Value": "StratusphereUXInstance"
+    },
+    "Retention": 7,
+    "ScheduleTime": "00:00",
+    "ScheduleInterval": 24,
+    "ScheduleName": "TestLambdaSchedule"
+  },
+  "RequestType": "Create",
+  "ResourceType": "Custom::TestResource",
+  "RequestId": "unique id for this create request",
+  "LogicalResourceId": "MyTestResource"
+}

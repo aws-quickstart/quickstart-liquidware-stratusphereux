@@ -15,7 +15,7 @@ except requests.exceptions.RequestException as e:
 
 #aws_region = json.loads(requests.get(url).content)['region']
 
-def create_dlm_policy(args):
+def create_dlm_policy(*args):
     dlm_client = boto3.client('dlm',region_name = aws_region)
 
     # Creates the Amazon Data Lifecycle Management Schedule for the Workload Specified in the CFN Script

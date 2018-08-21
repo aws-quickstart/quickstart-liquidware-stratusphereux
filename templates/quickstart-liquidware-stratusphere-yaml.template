@@ -24,13 +24,12 @@ Metadata:
       Parameters:
       - QSS3BucketName
       - QSS3KeyPrefix
-#    - Label:
-#        default: Snapshot Configuration
-#      Parameters:
-#      - RetentionTime
-#      - ScheduleName
-#      - ScheduleTime
-#      - ScheduleInterval
+    - Label:
+        default: Snapshot Configuration
+      Parameters:
+      - RetentionTime
+      - ScheduleTime
+      - ScheduleInterval
     ParameterLabels:
       KeyPairName:
         default: SSH Key Name
@@ -50,6 +49,14 @@ Metadata:
         default: S3 Bucket Name
       VPCID:
         default: VPC ID
+      DLMLambdaFile:
+        default: Lambda Zip File Name and Location
+      RetentionTime:
+        default: Number of snapshots you want to keep 
+      ScheduleTime:
+        default: The time the Data Lifecycle Policy will start within an hour
+      ScheduleInterval:
+        default: This is the interval between snaphots, only valid options are 12 or 24
 Parameters:
   KeyPairName:
     Description: Name of an existing EC2 key pair. All instances will launch with
@@ -85,29 +92,25 @@ Parameters:
       can include numbers, lowercase letters, uppercase letters, hyphens (-), and
       forward slash (/).
     Type: String
-#  DLMLambdaFile:
-#    AllowedPattern: ^[0-9a-zA-Z-/_'!().*]*$
-#    Default: scripts/create_dlm_policy.zip
-#    Description: S3 Location of Lambda Function that will create DLM Policy for StratusphereUX
-#    Type: String
-#  RetentionTime:
-#    Default: 7
-#    Description: Number of Snapshots to retain, this will also depend on Schedule Interval. 
-#      For Example if you want to retain 7 Days of snapshots with 24 Hour interval this value will be 7 but 
-#      12 hours interval it will be 14. 
-#    Type: Number
-#  ScheduleTime:
-#    Default: 00:00
-#    Description: The time the snapshot will occur, within one hour. 
-#    Type: String
-#  ScheduleName:
-#    Default: stratusphereux_backup
-#    Description: Name of the Amazon Data Life Cyle schedule for StratusphereUX.
-#    Type: String  
-#  ScheduleInterval:
-#    Default: 24
-#    Description: Interval in Hours between snapshots, must be a number and only 12 and 24 are valid options. 
-#    Type: Number
+  DLMLambdaFile:
+    AllowedPattern: ^[0-9a-zA-Z-/_'!().*]*$
+    Default: scripts/create_dlm_policy.zip
+    Description: S3 Location of Lambda Function that will create DLM Policy for StratusphereUX
+    Type: String
+  RetentionTime:
+    Default: 7
+    Description: Number of Snapshots to retain, this will also depend on Schedule Interval. 
+      For Example if you want to retain 7 Days of snapshots with 24 Hour interval this value will be 7 but 
+      12 hours interval it will be 14. 
+    Type: Number
+  ScheduleTime:
+    Default: 00:00
+    Description: The time the snapshot will occur, within one hour. 
+    Type: String
+  ScheduleInterval:
+    Default: 24
+    Description: Interval in Hours between snapshots, must be a number and only 12 and 24 are valid options. 
+    Type: Number
   VPCID:
     Description: ID of your existing VPC for deployment
     Type: AWS::EC2::VPC::Id
@@ -318,6 +321,7 @@ Resources:
          - 
            Name: InstanceId
            Value: !Ref StratUXInstance
+  
 Outputs:
   StratusphereUXDNS:
     Description: StratusphereUX Priavte DNS Name
