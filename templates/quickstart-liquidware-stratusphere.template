@@ -80,7 +80,7 @@ Parameters:
     Type: String
   DLMLambdaFile:
     AllowedPattern: ^[0-9a-zA-Z-/_'!().*]*$
-    Default: scripts/create_dlm_policy.zip
+    Default: scripts/dlm_policy_lambda.zip
     Description: S3 Location of Lambda Function that will create DLM Policy for StratusphereUX
     Type: String
   RetentionTime:
@@ -273,6 +273,7 @@ Resources:
               Action:
                 - dlm:CreateLifecyclePolicy
                 - dlm:UpdateLifecyclePolicy
+                - dlm:DeleteLifecyclePolicy
                 - dlm:GetLifecyclePolicies
                 - dlm:GetLifecyclePolicy
               Resource: "*"
@@ -282,7 +283,7 @@ Resources:
                 - iam:PassRole
               Resource: !GetAtt DLMRole.Arn
         PolicyName: aws-quick-start-dlm-create-policy
-  CreateDLMLambda:
+  DLMPolicyLambda:
     DependsOn: LambdaDLMRole
     Type: AWS::Lambda::Function
     Properties:
@@ -346,11 +347,11 @@ Resources:
          - 
            Name: InstanceId
            Value: !Ref StratUXInstance
-  CreateDLMPolicy:
-    DependsOn: CreateDLMLambda
-    Type: Custom::CreateDLMPolicy
+  DLMPolicy:
+    DependsOn: DLMPolicyLambda
+    Type: Custom::DLMPolicy
     Properties: 
-      ServiceToken: !GetAtt CreateDLMLambda.Arn
+      ServiceToken: !GetAtt DLMPolicyLambda.Arn
       ExecutionRole: !GetAtt DLMRole.Arn
       TargetTags: 
         Key: Name
@@ -358,6 +359,7 @@ Resources:
       Retention: !Ref RetentionTime
       ScheduleTime: !Ref ScheduleTime
       ScheduleInterval: !Ref ScheduleInterval
+      PolicyState: ENABLED
       AWSRegion: !Ref AWS::Region
 Outputs:
   StratusphereUXDNS:
