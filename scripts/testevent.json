@@ -10,7 +10,7 @@
     "Retention": 7,
     "ScheduleTime": "00:00",
     "ScheduleInterval": 24,
-    "ScheduleName": "TestLambdaSchedule"
+    "AWSRegion": "us-east-1"
   },
   "RequestType": "Create",
   "ResourceType": "Custom::TestResource",

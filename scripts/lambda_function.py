@@ -3,14 +3,14 @@
 
 import boto3
 
-dlm_client = boto3.client('dlm')
-
 def lambda_handler(event, context):
     from botocore.vendored import requests
     import json
     
     non_supported_regions = ['ap-northeast-3','eu-west-3']
-
+    aws_region = event['ResourceProperties']['AWSRegion']
+    dlm_client = boto3.client('dlm')
+    
     SUCCESS = "SUCCESS"
     FAILED = "FAILED"
     NONSUPPORTED = "DLM not available in Region"
@@ -57,7 +57,6 @@ def lambda_handler(event, context):
         retention = event['ResourceProperties']['Retention']
         snapshot_interval = event['ResourceProperties']['ScheduleInterval']
         schedule_time = event['ResourceProperties']['ScheduleTime']
-        aws_region = event['ResourceProperties']['AWSRegion']
 
         create_policy = dlm_client.create_lifecycle_policy(
             ExecutionRoleArn = execution_role,
@@ -94,8 +93,8 @@ def lambda_handler(event, context):
     
     if aws_region not in non_supported_regions:
         try:
-            create_dlm_policy(execution_role, target_tag_key, )
+            create_dlm_policy(event)
         except Exception as exc:
             send(event, context, FAILED , exc)
     else:
-        send(event, context, FAILED, NONSUPPORTED)
+        send(event, context, SUCCESS, NONSUPPORTED)
