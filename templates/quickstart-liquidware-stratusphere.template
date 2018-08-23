@@ -327,7 +327,9 @@ Resources:
       SubnetId: !Ref PrivateSubnet1ID
       Tags: 
         - Key: Name
-          Value: StratusphereUXInstance
+          Value: StratusphereUX
+        - Key: QS-DLM-Policy
+          Value: !Ref AWS::StackName
   StratUXAlarmInstanceRecovery:
     DependsOn: StratUXInstance
     Type: AWS::CloudWatch::Alarm
@@ -354,8 +356,8 @@ Resources:
       ServiceToken: !GetAtt DLMPolicyLambda.Arn
       ExecutionRole: !GetAtt DLMRole.Arn
       TargetTags: 
-        Key: Name
-        Value: StratusphereUXInstance
+        Key: QS-DLM-Policy
+        Value: !Ref AWS::StackName
       Retention: !Ref RetentionTime
       ScheduleTime: !Ref ScheduleTime
       ScheduleInterval: !Ref ScheduleInterval

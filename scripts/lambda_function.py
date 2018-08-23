@@ -146,7 +146,7 @@ def lambda_handler(event, context):
         )
         print(update_policy)
         send(event, context, SUCCESS, update_policy, policy_id)
-        
+
     actions = {
         'Create': create_dlm_policy,
         'Delete': delete_dlm_policy,
@@ -160,6 +160,6 @@ def lambda_handler(event, context):
         else:
             actions.get(req_type)(event)    
     except Exception as exc:
-        error_msg = {'Error': exc}
+        error_msg = {'Error': '{}'.format(exc)}
         print(error_msg)
         send(event, context, FAILED, error_msg)
