@@ -1,55 +1,11 @@
 [
     {
-        "ParameterKey": "ADServer1InstanceType",
-        "ParameterValue": "t2.large"
-    },
-    {
-        "ParameterKey": "ADServer1NetBIOSName",
-        "ParameterValue": "DC1"
-    },
-    {
-        "ParameterKey": "ADServer1PrivateIP",
-        "ParameterValue": "10.0.0.10"
-    },
-    {
-        "ParameterKey": "ADServer2InstanceType",
-        "ParameterValue": "t2.large"
-    },
-    {
-        "ParameterKey": "ADServer2NetBIOSName",
-        "ParameterValue": "DC2"
-    },
-    {
-        "ParameterKey": "ADServer2PrivateIP",
-        "ParameterValue": "10.0.32.10"
-    },
-    {
         "ParameterKey": "AvailabilityZones",
         "ParameterValue": "$[alfred_genaz_2]"
     },
     {
-        "ParameterKey": "DomainAdminPassword",
-        "ParameterValue": "$[alfred_genpass_24]"
-    },
-    {
-        "ParameterKey": "DomainAdminUser",
-        "ParameterValue": "StackAdmin"
-    },
-    {
-        "ParameterKey": "DomainDNSName",
-        "ParameterValue": "example.com"
-    },
-    {
-        "ParameterKey": "DomainNetBIOSName",
-        "ParameterValue": "example"
-    },
-    {
         "ParameterKey": "KeyPairName",
         "ParameterValue": "aarolima"
-    },
-    {
-        "ParameterKey": "NumberOfRDGWHosts",
-        "ParameterValue": "1"
     },
     {
         "ParameterKey": "PrivateSubnet1CIDR",
@@ -76,11 +32,59 @@
         "ParameterValue": "10.0.0.0/16"
     },
     {
-        "ParameterKey": "RestoreModePassword",
+        "ParameterKey": "QSS3BucketName",
+        "ParameterValue": "aws-quickstart"
+    },
+    {
+        "ParameterKey": "QSS3KeyPrefix",
+        "ParameterValue": "quickstart-examples/"
+    },
+    {
+        "ParameterKey": "NumberOfRDGWHosts",
+        "ParameterValue": "1"
+    },
+    {
+        "ParameterKey": "RDGWInstanceType",
+        "ParameterValue": "t2.large"
+    },
+    {
+        "ParameterKey": "RDGWCIDR",
+        "ParameterValue": "10.0.0.0/16"
+    },
+    {
+        "ParameterKey": "DomainDNSName",
+        "ParameterValue": "example.com"
+    },
+    {
+        "ParameterKey": "AdminPassword",
         "ParameterValue": "$[alfred_genpass_24]"
+    },
+    {
+        "ParameterKey": "AdminUser",
+        "ParameterValue": "StackAdmin"
     },
     {
         "ParameterKey": "VPCCIDR",
         "ParameterValue": "10.0.0.0/16"
+    },
+    {
+        "ParameterKey": "StratUXInstanceType",
+        "ParameterValue": "m4.large"
+    },
+    {
+        "ParameterKey": "DLMLambdaFile",
+        "ParameterValue": "scripts/create_dlm_policy.zip"
+    },
+    {
+        "ParameterKey": "RetentionTime",
+        "ParameterValue": "7"
+    },
+    {
+        "ParameterKey": "ScheduleTime",
+        "ParameterValue": "00:00"
+    },
+    {
+        "ParameterKey": "ScheduleInterval",
+        "ParameterValue": "24"
     }
 ]

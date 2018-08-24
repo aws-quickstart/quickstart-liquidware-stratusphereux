@@ -60,5 +60,5 @@
   "ResourceType": "Custom::TestResource",
   "RequestId": "unique id for this create request",
   "LogicalResourceId": "MyTestResource",
-  "PhysicalResourceId": "policy-053ff42e2ff9f00c4"
+  "PhysicalResourceId": "policy-0e48e0a6c68a955b8"
 }

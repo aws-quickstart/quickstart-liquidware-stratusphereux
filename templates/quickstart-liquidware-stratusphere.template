@@ -25,12 +25,13 @@ Metadata:
     - Label:
         default: Snapshot Configuration
       Parameters:
+      - DLMLambdaFile
       - RetentionTime
       - ScheduleTime
       - ScheduleInterval
     ParameterLabels:
       KeyPairName:
-        default: SSH Key Name
+        default: Key Pair Name
       PrivateSubnet1ID:
         default: Private Subnet 1 ID
       PrivateSubnet2ID:
@@ -44,7 +45,7 @@ Metadata:
       VPCID:
         default: VPC ID
       DLMLambdaFile:
-        default: Lambda Zip File Name and Location
+        default: Lambda Zip File Name and Location for DLM Custom Resource
       RetentionTime:
         default: Number of snapshots you want to keep 
       ScheduleTime:

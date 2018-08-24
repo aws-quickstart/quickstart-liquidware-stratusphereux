@@ -20,7 +20,7 @@ global:
   reporting: true
 tests:
   master1:
-    parameter_input: ad-master-1.json
+    parameter_input: stratusphere-master.json
     regions:
       - ap-northeast-2
       - ap-southeast-1
@@ -30,5 +30,5 @@ tests:
       - sa-east-1
       - us-east-2
       - us-west-2
-    template_file: ad-master-1.template
+    template_file: quickstart-liquidware-master.template
 
