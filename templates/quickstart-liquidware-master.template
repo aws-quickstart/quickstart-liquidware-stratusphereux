@@ -157,7 +157,7 @@ Parameters:
     Default: example.com
     MinLength: 2
     MaxLength: 255
-    AllowedPattern: '[a-zA-Z0-9\\-]+\\..+'
+    AllowedPattern: "[a-zA-Z0-9\\-]+\\..+"
   RDGWInstanceType:
     Description: Amazon EC2 instance type for the first Remote Desktop Gateway instance
     Type: String

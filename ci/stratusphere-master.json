@@ -33,11 +33,11 @@
     },
     {
         "ParameterKey": "QSS3BucketName",
-        "ParameterValue": "aws-quickstart"
+        "ParameterValue": "al-qs-us-east-1"
     },
     {
         "ParameterKey": "QSS3KeyPrefix",
-        "ParameterValue": "quickstart-examples/"
+        "ParameterValue": "liquidware-scripts/"
     },
     {
         "ParameterKey": "NumberOfRDGWHosts",
