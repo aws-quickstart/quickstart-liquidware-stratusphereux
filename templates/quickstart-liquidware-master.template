@@ -302,7 +302,9 @@ Resources:
           ScheduleInterval:
             Ref: ScheduleInterval
           VPCID:
-            Ref: VPCID
+            Fn::GetAtt:
+              - VPCStack
+              - Outputs.VPCID
           VPCCIDR:
             Ref: VPCCIDR
           StratUXInstanceType:
