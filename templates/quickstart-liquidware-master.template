@@ -227,7 +227,7 @@ Parameters:
     Type: String
   DLMLambdaFile:
     AllowedPattern: ^[0-9a-zA-Z-/_'!().*]*$
-    Default: scripts/create_dlm_policy.zip
+    Default: scripts/dlm_policy_lambda.zip
     Description: S3 Location of Lambda Function that will create DLM Policy for StratusphereUX
     Type: String
   RetentionTime:
@@ -245,14 +245,21 @@ Parameters:
     Description: Interval in Hours between snapshots, must be a number and only 12 and 24 are valid options. 
     Type: Number
 Conditions:
-  GovCloudCondition:
-    Fn::Equals: [ Ref: "AWS::Region", us-gov-west-1"]
+  GovCloudCondition: !Equals
+   - !Ref AWS::Region
+   - us-gov-west-1
 Resources:
   VPCStack:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL:
-        Fn::Sub: https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template
+        Fn::Sub:
+        - https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template
+        - QSS3Region:
+            Fn::If:
+            - GovCloudCondition
+            - s3-us-gov-west-1
+            - s3
       Parameters:
         AvailabilityZones:
           Fn::Join:
@@ -283,15 +290,15 @@ Resources:
           PrivateSubnet1ID:
             Fn::GetAtt:
               - VPCStack
-              - Outputs.PrivateSubnet1ID
+              - Outputs.PrivateSubnet1AID
           PrivateSubnet2ID:
             Fn::GetAtt:
               - VPCStack
-              - Outputs.PrivateSubnet1ID
+              - Outputs.PrivateSubnet1AID
           QSS3BucketName:
             Ref: QSS3BucketName
           QSS3KeyPrefix:
-            Fn::Sub: ${QSS3KeyPrefix}templates/quickstart-liquidware-stratusphere.template
+            Ref: QSS3KeyPrefix
           DLMLambdaFile:
             Ref: DLMLambdaFile
           RetentionTime:
@@ -313,42 +320,42 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL:
-        Fn::Sub: 
-          - https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}submodules/quickstart-microsoft-rdgateway/templates/rdgw-standalone.template
-          - QSS3Region:
-              Fn::If:
-                - GovCloudCondition
-                - s3-us-gov-west-1
-                - s3
-        Parameters:
-          AdminPassword:
-            Ref: AdminPassword
-          AdminUser:
-            Ref: AdminUser
-          DomainDNSName:
-            Ref: DomainDNSName
-          KeyPairName:
-            Ref: KeyPairName
-          NumberOfRDGWHosts:
-            Ref: NumberOfRDGWHosts
-          PublicSubnet1ID:
-            Fn::GetAtt: 
-              - VPCStack
-              - Outputs.PublicSubnet1ID
-          PublicSubnet2ID:
-            Fn::GetAtt:
-              - VPCStack
-              - Outputs.PublicSubnet2ID
-          QSS3BucketName:
-            Ref: QSS3BucketName
-          QSS3KeyPrefix:
-            Fn::Sub: "${QSS3KeyPrefix}submodules/quickstart-microsoft-rdgateway/"
-          RDGWInstanceType:
-            Ref: RDGWInstanceType
-          RDGWCIDR:
-            Ref: RDGWCIDR
-          VPCID:
-            Fn::GetAtt:
-              - VPCStack
-              - Outputs.VPCID
+        Fn::Sub:
+        - https://${QSS3BucketName}.${QSS3Region}.amazonaws.com/${QSS3KeyPrefix}submodules/quickstart-microsoft-rdgateway/templates/rdgw-standalone.template
+        - QSS3Region:
+            Fn::If:
+            - GovCloudCondition
+            - s3-us-gov-west-1
+            - s3
+      Parameters:
+        AdminPassword:
+          Ref: AdminPassword
+        AdminUser:
+          Ref: AdminUser
+        DomainDNSName:
+          Ref: DomainDNSName
+        KeyPairName:
+          Ref: KeyPairName
+        NumberOfRDGWHosts:
+          Ref: NumberOfRDGWHosts
+        PublicSubnet1ID:
+          Fn::GetAtt: 
+            - VPCStack
+            - Outputs.PublicSubnet1ID
+        PublicSubnet2ID:
+          Fn::GetAtt:
+            - VPCStack
+            - Outputs.PublicSubnet2ID
+        QSS3BucketName:
+          Ref: QSS3BucketName
+        QSS3KeyPrefix:
+          Fn::Sub: "${QSS3KeyPrefix}submodules/quickstart-microsoft-rdgateway/"
+        RDGWInstanceType:
+          Ref: RDGWInstanceType
+        RDGWCIDR:
+          Ref: RDGWCIDR
+        VPCID:
+          Fn::GetAtt:
+            - VPCStack
+            - Outputs.VPCID
 ...
