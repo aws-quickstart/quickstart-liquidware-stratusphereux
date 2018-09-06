@@ -73,7 +73,7 @@
     },
     {
         "ParameterKey": "DLMLambdaFile",
-        "ParameterValue": "scripts/create_dlm_policy.zip"
+        "ParameterValue": "scripts/dlm_policy_lambda.zip"
     },
     {
         "ParameterKey": "RetentionTime",
