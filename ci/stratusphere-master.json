@@ -5,7 +5,7 @@
     },
     {
         "ParameterKey": "KeyPairName",
-        "ParameterValue": "aarolima"
+        "ParameterValue": "limakey"
     },
     {
         "ParameterKey": "PrivateSubnet1CIDR",
@@ -33,11 +33,11 @@
     },
     {
         "ParameterKey": "QSS3BucketName",
-        "ParameterValue": "aws-quickstart"
+        "ParameterValue": "al-qs-us-east-1"
     },
     {
         "ParameterKey": "QSS3KeyPrefix",
-        "ParameterValue": "quickstart-examples/"
+        "ParameterValue": "quickstart-liquidware-stratusphereux/"
     },
     {
         "ParameterKey": "NumberOfRDGWHosts",
@@ -73,7 +73,7 @@
     },
     {
         "ParameterKey": "DLMLambdaFile",
-        "ParameterValue": "scripts/create_dlm_policy.zip"
+        "ParameterValue": "scripts/dlm_policy_lambda.zip"
     },
     {
         "ParameterKey": "RetentionTime",
