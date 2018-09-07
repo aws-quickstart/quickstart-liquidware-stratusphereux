@@ -20,6 +20,6 @@ global:
   reporting: true
 tests:
   master1:
-    parameter_input: stratusphere-master.json
-    template_file: quickstart-liquidware-master.template
+    parameter_input: stratusphereux-master.json
+    template_file: stratusphereux-master.template
 
