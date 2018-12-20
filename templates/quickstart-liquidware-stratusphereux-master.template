@@ -74,8 +74,6 @@ Metadata:
         default: Allowed Remote Desktop Gateway External Access CIDR
       VPCCIDR:
         default: VPC CIDR
-      DLMLambdaFile:
-        default: Lambda Zip File Name and Location for DLM Custom Resource
       RetentionTime:
         default: Number of snapshots you want to keep 
       ScheduleTime:
@@ -225,11 +223,6 @@ Parameters:
     Default: m4.xlarge
     Description: Type of EC2 instance for the Workload instances. Must contain valid instance type
     Type: String
-  DLMLambdaFile:
-    AllowedPattern: ^[0-9a-zA-Z-/_'!().*]*$
-    Default: scripts/dlm_policy_lambda.zip
-    Description: S3 Location of Lambda Function that will create DLM Policy for StratusphereUX
-    Type: String
   RetentionTime:
     Default: 7
     Description: Number of Snapshots to retain, this will also depend on Schedule Interval. 
@@ -299,8 +292,6 @@ Resources:
             Ref: QSS3BucketName
           QSS3KeyPrefix:
             Ref: QSS3KeyPrefix
-          DLMLambdaFile:
-            Ref: DLMLambdaFile
           RetentionTime:
             Ref: RetentionTime
           ScheduleTime:
