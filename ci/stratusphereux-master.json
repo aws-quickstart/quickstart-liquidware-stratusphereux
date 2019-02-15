@@ -1,11 +1,11 @@
 [
     {
         "ParameterKey": "AvailabilityZones",
-        "ParameterValue": "$[alfred_genaz_2]"
+        "ParameterValue": "$[taskcat_genaz_2]"
     },
     {
         "ParameterKey": "KeyPairName",
-        "ParameterValue": "limakey"
+        "ParameterValue": "$[taskcat_getkeypair]"
     },
     {
         "ParameterKey": "PrivateSubnet1CIDR",
@@ -33,11 +33,7 @@
     },
     {
         "ParameterKey": "QSS3BucketName",
-        "ParameterValue": "al-qs-us-east-1"
-    },
-    {
-        "ParameterKey": "QSS3KeyPrefix",
-        "ParameterValue": "quickstart-liquidware-stratusphereux/"
+        "ParameterValue": "$[taskcat_autobucket]"
     },
     {
         "ParameterKey": "NumberOfRDGWHosts",
@@ -57,7 +53,7 @@
     },
     {
         "ParameterKey": "AdminPassword",
-        "ParameterValue": "$[alfred_genpass_24]"
+        "ParameterValue": "$[taskcat_genpass_24]"
     },
     {
         "ParameterKey": "AdminUser",
@@ -70,10 +66,6 @@
     {
         "ParameterKey": "StratUXInstanceType",
         "ParameterValue": "m4.large"
-    },
-    {
-        "ParameterKey": "DLMLambdaFile",
-        "ParameterValue": "scripts/dlm_policy_lambda.zip"
     },
     {
         "ParameterKey": "RetentionTime",
