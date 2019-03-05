@@ -152,37 +152,39 @@ Rules:
         - Fn::RefAll: AWS::EC2::VPC::Id
       AssertDescription: All subnets must in the VPC
 Mappings:
-  StratUXAMIRegionMap:
+  AWSAMIRegionMap:
+    AMI:
+      LIQUIDWARESTRATUXHUBHVM: Liquidware Stratusphere Hub (v6.1.2) 20190128-8491b2e5-a03f-4c7f-9a11-5433e8203794-ami-0a1e1fa403411a069.4
     us-east-1: 
-      StratUXAMI: ami-b9fb01c4
+      LIQUIDWARESTRATUXHUBHVM: ami-05d1eac1fa4c9792c
     us-east-2:
-      StratUXAMI: ami-65310700
+      LIQUIDWARESTRATUXHUBHVM: ami-0dbc74b9f0918d79a
     ap-northeast-1:
-      StratUXAMI: ami-f290de94
+      LIQUIDWARESTRATUXHUBHVM: ami-f290de94
     ap-northeast-2:
-      StratUXAMI: ami-8cf15de2
+      LIQUIDWARESTRATUXHUBHVM: ami-8cf15de2
     ap-south-1:
-      StratUXAMI: ami-911f46fe
+      LIQUIDWARESTRATUXHUBHVM: ami-911f46fe
     ap-southeast-1:
-      StratUXAMI: ami-f7e8bf8b
+      LIQUIDWARESTRATUXHUBHVM: ami-f7e8bf8b
     ap-southeast-2:
-      StratUXAMI: ami-5c24e43e
+      LIQUIDWARESTRATUXHUBHVM: ami-5c24e43e
     ca-central-1:
-      StratUXAMI: ami-2e60e74a
+      LIQUIDWARESTRATUXHUBHVM: ami-2e60e74a
     eu-central-1:
-      StratUXAMI: ami-77711818
+      LIQUIDWARESTRATUXHUBHVM: ami-77711818
     eu-west-1:
-      StratUXAMI: ami-59480420
+      LIQUIDWARESTRATUXHUBHVM: ami-59480420
     eu-west-2:
-      StratUXAMI: ami-2d2ccb4a
+      LIQUIDWARESTRATUXHUBHVM: ami-2d2ccb4a
     eu-west-3:
-      StratUXAMI: ami-ac50e6d1
+      LIQUIDWARESTRATUXHUBHVM: ami-ac50e6d1
     sa-east-1:
-      StratUXAMI: ami-1692d87a
+      LIQUIDWARESTRATUXHUBHVM: ami-1692d87a
     us-west-1:
-      StratUXAMI: ami-642d3804
+      LIQUIDWARESTRATUXHUBHVM: ami-642d3804
     us-west-2:
-      StratUXAMI: ami-a6f761de
+      LIQUIDWARESTRATUXHUBHVM: ami-a6f761de
 Resources:
   StratUXDLMPolicy:  
     Type: "AWS::DLM::LifecyclePolicy"
@@ -262,7 +264,7 @@ Resources:
     Properties:
       IamInstanceProfile: 
         Ref: StratUXProfile
-      ImageId: !FindInMap [StratUXAMIRegionMap, !Ref "AWS::Region", "StratUXAMI"]
+      ImageId: !FindInMap [AWSAMIRegionMap, !Ref "AWS::Region", "LIQUIDWARESTRATUXHUBHVM"]
       InstanceType: !Ref StratUXInstanceType
       KeyName: !Ref KeyPairName
       SecurityGroupIds: 

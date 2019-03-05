@@ -276,7 +276,7 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL:
-        Fn::Sub: https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/quickstart-liquidware-stratusphereux.template
+        Fn::Sub: https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/quickstart-liquidware-stratux.template.yaml
       Parameters:
           KeyPairName: 
             Ref: KeyPairName
