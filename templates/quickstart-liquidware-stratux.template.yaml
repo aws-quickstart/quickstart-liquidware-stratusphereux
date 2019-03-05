@@ -1,8 +1,10 @@
+---
 AWSTemplateFormatVersion: '2010-09-09'
-Description: This template deploys Liquidware Stratsphere UX from the AWS Marketplace. It configures a EBS Lifecycle
-  for backup and sets up an EC2 Recover Instance as well since this is currently a single node solution. **WARNING**
-  This template creates EC2 instances and related resources. You will be billed for
-  the AWS resources used if you create a stack from this template.
+Description: This template deploys Liquidware Stratsphere UX from the AWS Marketplace.
+  It configures a EBS Lifecycle for backup and sets up an EC2 Recover Instance as
+  well since this is currently a single node solution. **WARNING** This template creates
+  EC2 instances and related resources. You will be billed for the AWS resources used
+  if you create a stack from this template.
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -44,11 +46,12 @@ Metadata:
       VPCID:
         default: VPC ID
       RetentionTime:
-        default: Number of snapshots you want to keep 
+        default: Number of snapshots you want to keep
       ScheduleTime:
         default: The time the Data Lifecycle Policy will start within an hour
       ScheduleInterval:
-        default: This is the interval between snaphots, only valid options are 12 or 24
+        default: This is the interval between snaphots, only valid options are 12
+          or 24
 Parameters:
   KeyPairName:
     Description: Name of an existing EC2 key pair. All instances will launch with
@@ -78,17 +81,18 @@ Parameters:
     Type: String
   RetentionTime:
     Default: 7
-    Description: Number of Snapshots to retain, this will also depend on Schedule Interval. 
-      For Example if you want to retain 7 Days of snapshots with 24 Hour interval this value will be 7 but 
-      12 hours interval it will be 14. 
+    Description: Number of Snapshots to retain, this will also depend on Schedule
+      Interval. For Example if you want to retain 7 Days of snapshots with 24 Hour
+      interval this value will be 7 but 12 hours interval it will be 14.
     Type: Number
   ScheduleTime:
     Default: 00:00
-    Description: The time the snapshot will occur, within one hour. 
+    Description: The time the snapshot will occur, within one hour.
     Type: String
   ScheduleInterval:
     Default: 24
-    Description: Interval in Hours between snapshots, must be a number and only 12 and 24 are valid options. 
+    Description: Interval in Hours between snapshots, must be a number and only 12
+      and 24 are valid options.
     Type: Number
   VPCID:
     Description: ID of your existing VPC for deployment
@@ -131,7 +135,8 @@ Parameters:
     - r4.4xlarge
     - r4.8xlarge
     Default: m4.xlarge
-    Description: Type of EC2 instance for the Workload instances. Must contain valid instance type
+    Description: Type of EC2 instance for the Workload instances. Must contain valid
+      instance type
     Type: String
 Rules:
   KeyPairsNotEmpty:
@@ -154,66 +159,63 @@ Rules:
 Mappings:
   AWSAMIRegionMap:
     AMI:
-      LIQUIDWARESTRATUXHUBHVM: Liquidware Stratusphere Hub (v6.0.0)
-    us-east-1: 
+      LIQUIDWARESTRATUXHUBHVM: Liquidware Stratusphere Hub (v6.1.2) 20190128-8491b2e5-a03f-4c7f-9a11-5433e8203794-ami-0a1e1fa403411a069.4
+    ap-northeast-1:
+      LIQUIDWARESTRATUXHUBHVM: ami-0f1b69174b853fe3d
+    ap-northeast-2:
+      LIQUIDWARESTRATUXHUBHVM: ami-0e0ba39654d9dd75d
+    ap-south-1:
+      LIQUIDWARESTRATUXHUBHVM: ami-07037cee1376bc516
+    ap-southeast-1:
+      LIQUIDWARESTRATUXHUBHVM: ami-09877111c95402367
+    ap-southeast-2:
+      LIQUIDWARESTRATUXHUBHVM: ami-0ac460435e98a6b0b
+    ca-central-1:
+      LIQUIDWARESTRATUXHUBHVM: ami-0cfaa3572a247393b
+    eu-central-1:
+      LIQUIDWARESTRATUXHUBHVM: ami-064865a3fccf22e76
+    eu-west-1:
+      LIQUIDWARESTRATUXHUBHVM: ami-014880fccc89e36b2
+    eu-west-2:
+      LIQUIDWARESTRATUXHUBHVM: ami-01781e18f33413c7a
+    eu-west-3:
+      LIQUIDWARESTRATUXHUBHVM: ami-053712847a6a5428b
+    sa-east-1:
+      LIQUIDWARESTRATUXHUBHVM: ami-007fcf07ec5f434ac
+    us-east-1:
       LIQUIDWARESTRATUXHUBHVM: ami-05d1eac1fa4c9792c
     us-east-2:
       LIQUIDWARESTRATUXHUBHVM: ami-0dbc74b9f0918d79a
-    ap-northeast-1:
-      LIQUIDWARESTRATUXHUBHVM: ami-f290de94
-    ap-northeast-2:
-      LIQUIDWARESTRATUXHUBHVM: ami-8cf15de2
-    ap-south-1:
-      LIQUIDWARESTRATUXHUBHVM: ami-911f46fe
-    ap-southeast-1:
-      LIQUIDWARESTRATUXHUBHVM: ami-f7e8bf8b
-    ap-southeast-2:
-      LIQUIDWARESTRATUXHUBHVM: ami-5c24e43e
-    ca-central-1:
-      LIQUIDWARESTRATUXHUBHVM: ami-2e60e74a
-    eu-central-1:
-      LIQUIDWARESTRATUXHUBHVM: ami-77711818
-    eu-west-1:
-      LIQUIDWARESTRATUXHUBHVM: ami-59480420
-    eu-west-2:
-      LIQUIDWARESTRATUXHUBHVM: ami-2d2ccb4a
-    eu-west-3:
-      LIQUIDWARESTRATUXHUBHVM: ami-ac50e6d1
-    sa-east-1:
-      LIQUIDWARESTRATUXHUBHVM: ami-1692d87a
     us-west-1:
-      LIQUIDWARESTRATUXHUBHVM: ami-642d3804
+      LIQUIDWARESTRATUXHUBHVM: ami-02c817df60a93f6fa
     us-west-2:
-      LIQUIDWARESTRATUXHUBHVM: ami-a6f761de
+      LIQUIDWARESTRATUXHUBHVM: ami-010657d97b420c9a0
 Resources:
-  StratUXDLMPolicy:  
-    Type: "AWS::DLM::LifecyclePolicy"
+  StratUXDLMPolicy:
+    Type: AWS::DLM::LifecyclePolicy
     Properties:
-      Description: !Sub "DLM Schedule Created for ${AWS::StackName} by Quick Start"
-      State: "ENABLED"
-      ExecutionRoleArn: !Sub "arn:aws:iam::${AWS::AccountId}:role/AWSDataLifecycleManagerDefaultRole"
+      Description: !Sub DLM Schedule Created for ${AWS::StackName} by Quick Start
+      State: ENABLED
+      ExecutionRoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/AWSDataLifecycleManagerDefaultRole
       PolicyDetails:
         ResourceTypes:
-          - "VOLUME"
+        - VOLUME
         TargetTags:
-          -
-            Key: "QS-DLM-Policy"
-            Value: !Ref AWS::StackName 
+        - Key: QS-DLM-Policy
+          Value: !Ref AWS::StackName
         Schedules:
-          -
-            Name: !Sub "${AWS::StackName} DLM Schedule"
-            TagsToAdd:
-              -
-                Key: "type"
-                Value: "DailySnapshot"
-            CreateRule:
-              Interval: !Ref ScheduleInterval
-              IntervalUnit: "HOURS"
-              Times:
-                - !Ref ScheduleTime
-            RetainRule:
-              Count: !Ref RetentionTime
-            CopyTags: true
+        - Name: !Sub ${AWS::StackName} DLM Schedule
+          TagsToAdd:
+          - Key: type
+            Value: DailySnapshot
+          CreateRule:
+            Interval: !Ref ScheduleInterval
+            IntervalUnit: HOURS
+            Times:
+            - !Ref ScheduleTime
+          RetainRule:
+            Count: !Ref RetentionTime
+          CopyTags: true
   StratUXRole:
     Type: AWS::IAM::Role
     Properties:
@@ -222,16 +224,16 @@ Resources:
         - Effect: Allow
           Principal:
             Service:
-              - ec2.amazonaws.com
+            - ec2.amazonaws.com
           Action:
-            - sts:AssumeRole
+          - sts:AssumeRole
       Path: /
       Policies:
       - PolicyDocument:
           Version: '2012-10-17'
           Statement:
           - Action:
-              - s3:GetObject
+            - s3:GetObject
             Resource:
               Fn::Sub: arn:aws:s3:::${QSS3BucketName}/${QSS3KeyPrefix}*
             Effect: Allow
@@ -262,25 +264,30 @@ Resources:
   StratUXInstance:
     Type: AWS::EC2::Instance
     Properties:
-      IamInstanceProfile: 
+      IamInstanceProfile:
         Ref: StratUXProfile
-      ImageId: !FindInMap [AWSAMIRegionMap, !Ref "AWS::Region", "LIQUIDWARESTRATUXHUBHVM"]
+      ImageId:
+        !FindInMap
+        - AWSAMIRegionMap
+        - !Ref AWS::Region
+        - LIQUIDWARESTRATUXHUBHVM
       InstanceType: !Ref StratUXInstanceType
       KeyName: !Ref KeyPairName
-      SecurityGroupIds: 
-        - !Ref StratUXSecurityGroup
+      SecurityGroupIds:
+      - !Ref StratUXSecurityGroup
       SubnetId: !Ref PrivateSubnet1ID
-      Tags: 
-        - Key: Name
-          Value: StratusphereUX
-        - Key: QS-DLM-Policy
-          Value: !Ref AWS::StackName
+      Tags:
+      - Key: Name
+        Value: StratusphereUX
+      - Key: QS-DLM-Policy
+        Value: !Ref AWS::StackName
   StratUXAlarmInstanceRecovery:
     DependsOn: StratUXInstance
     Type: AWS::CloudWatch::Alarm
     Properties:
       ActionsEnabled: true
-      AlarmDescription: Trigger a recovery when instance status check fails for 10 consecutive minutes.
+      AlarmDescription: Trigger a recovery when instance status check fails for 10
+        consecutive minutes.
       Namespace: AWS/EC2
       MetricName: StatusCheckFailed_System
       Statistic: Minimum
@@ -289,11 +296,14 @@ Resources:
       ComparisonOperator: GreaterThanThreshold
       Threshold: 0
       AlarmActions:
-        - Fn::Join: ['', ['arn:aws:automate:', !Ref 'AWS::Region', ':ec2:recover']]
+      - Fn::Join:
+        - ''
+        - - 'arn:aws:automate:'
+          - !Ref AWS::Region
+          - :ec2:recover
       Dimensions:
-         - 
-           Name: InstanceId
-           Value: !Ref StratUXInstance
+      - Name: InstanceId
+        Value: !Ref StratUXInstance
 Outputs:
   StratusphereUXDNS:
     Description: StratusphereUX Private DNS Name
@@ -306,4 +316,5 @@ Outputs:
     Value:
       Fn::GetAtt:
       - StratUXInstance
-      - PrivateIp    
+      - PrivateIp
+...
