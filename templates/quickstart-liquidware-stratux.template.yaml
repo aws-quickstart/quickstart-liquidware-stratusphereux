@@ -154,7 +154,7 @@ Rules:
 Mappings:
   AWSAMIRegionMap:
     AMI:
-      LIQUIDWARESTRATUXHUBHVM: Liquidware Stratusphere Hub (v6.1.2) 20190128-8491b2e5-a03f-4c7f-9a11-5433e8203794-ami-0a1e1fa403411a069.4
+      LIQUIDWARESTRATUXHUBHVM: Liquidware Stratusphere Hub (v6.0.0) 20181128-8491b2e5-a03f-4c7f-9a11-5433e8203794-ami-0a1e1fa403411a069.4
     us-east-1: 
       LIQUIDWARESTRATUXHUBHVM: ami-05d1eac1fa4c9792c
     us-east-2:
