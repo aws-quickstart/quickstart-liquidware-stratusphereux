@@ -189,31 +189,31 @@ Resources:
   StratUXDLMPolicy:  
     Type: "AWS::DLM::LifecyclePolicy"
     Properties:
-    Description: !Sub "DLM Schedule Created for ${AWS::StackName} by Quick Start"
-    State: "ENABLED"
-    ExecutionRoleArn: !Sub "arn:aws:iam::${AWS::AccountId}:role/AWSDataLifecycleManagerDefaultRole"
-    PolicyDetails:
-      ResourceTypes:
-        - "VOLUME"
-      TargetTags:
-        -
-          Key: "QS-DLM-Policy"
-          Value: !Ref AWS::StackName 
-      Schedules:
-        -
-          Name: !Sub "${AWS::StackName} DLM Schedule"
-          TagsToAdd:
-            -
-              Key: "type"
-              Value: "DailySnapshot"
-          CreateRule:
-            Interval: !Ref ScheduleInterval
-            IntervalUnit: "HOURS"
-            Times:
-              - !Ref ScheduleTime
-          RetainRule:
-            Count: !Ref RetentionTime
-          CopyTags: true
+      Description: !Sub "DLM Schedule Created for ${AWS::StackName} by Quick Start"
+      State: "ENABLED"
+      ExecutionRoleArn: !Sub "arn:aws:iam::${AWS::AccountId}:role/AWSDataLifecycleManagerDefaultRole"
+      PolicyDetails:
+        ResourceTypes:
+          - "VOLUME"
+        TargetTags:
+          -
+            Key: "QS-DLM-Policy"
+            Value: !Ref AWS::StackName 
+        Schedules:
+          -
+            Name: !Sub "${AWS::StackName} DLM Schedule"
+            TagsToAdd:
+              -
+                Key: "type"
+                Value: "DailySnapshot"
+            CreateRule:
+              Interval: !Ref ScheduleInterval
+              IntervalUnit: "HOURS"
+              Times:
+                - !Ref ScheduleTime
+            RetainRule:
+              Count: !Ref RetentionTime
+            CopyTags: true
   StratUXRole:
     Type: AWS::IAM::Role
     Properties:
