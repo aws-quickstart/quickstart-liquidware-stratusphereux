@@ -19,7 +19,7 @@ global:
     - us-west-2
   reporting: true
 tests:
-  master1:
+  StartUX-Test:
     parameter_input: stratusphereux-master.json
     template_file: quickstart-liquidware-stratux-master.template.yaml
 
