@@ -6,6 +6,12 @@ Description: This template deploys Liquidware Stratsphere UX from the AWS Market
   EC2 instances and related resources. You will be billed for the AWS resources used
   if you create a stack from this template.
 Metadata:
+  AWSAMIRegionMap:
+    Filters:
+      LIQUIDWARESTRATUXHUBHVM:
+        name: Liquidware Stratusphere Hub (v6.*) ????????*
+        owner-alias: aws-marketplace
+        product-code.type: marketplace
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:
