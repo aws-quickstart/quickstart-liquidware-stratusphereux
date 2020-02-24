@@ -65,7 +65,7 @@
     },
     {
         "ParameterKey": "StratUXInstanceType",
-        "ParameterValue": "m4.large"
+        "ParameterValue": "m4.xlarge"
     },
     {
         "ParameterKey": "RetentionTime",
