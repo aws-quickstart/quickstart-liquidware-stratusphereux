@@ -1,0 +1,57 @@
+project:
+  name: quickstart-liquidware-stratusphereux
+  owner: quickstart-eng@amazon.com
+  package_lambda: false
+  regions:
+  - ap-northeast-1
+  - ap-northeast-2
+  - ap-south-1
+  - ap-southeast-1
+  - ap-southeast-2
+  - ca-central-1
+  - eu-central-1
+  - eu-west-1
+  - eu-west-2
+  - us-east-1
+  - us-east-2
+  - us-west-1
+  - us-west-2
+  s3_bucket: ''
+tests:
+  StartUX-Test:
+    parameters:
+      AdminPassword: $[taskcat_genpass_24]
+      AdminUser: StackAdmin
+      AvailabilityZones: $[taskcat_genaz_2]
+      DomainDNSName: example.com
+      KeyPairName: $[taskcat_getkeypair]
+      NumberOfRDGWHosts: '1'
+      PrivateSubnet1CIDR: 10.0.0.0/19
+      PrivateSubnet2CIDR: 10.0.32.0/19
+      PublicSubnet1CIDR: 10.0.128.0/20
+      PublicSubnet2CIDR: 10.0.144.0/20
+      QSS3BucketName: $[taskcat_autobucket]
+      QSS3BucketRegion: $[taskcat_current_region]
+      RDGWCIDR: 10.0.0.0/16
+      RDGWInstanceType: t2.large
+      RetentionTime: '7'
+      ScheduleInterval: '24'
+      ScheduleTime: 00:00
+      StratUXInstanceType: m4.xlarge
+      VPCCIDR: 10.0.0.0/16
+    regions:
+    - ap-northeast-1
+    - ap-northeast-2
+    - ap-south-1
+    - ap-southeast-1
+    - ap-southeast-2
+    - ca-central-1
+    - eu-central-1
+    - eu-west-1
+    - eu-west-2
+    - us-east-1
+    - us-east-2
+    - us-west-1
+    - us-west-2
+    s3_bucket: ''
+    template: templates/quickstart-liquidware-stratux-master.template.yaml
