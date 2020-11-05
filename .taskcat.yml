@@ -23,6 +23,7 @@ tests:
       AdminPassword: $[taskcat_genpass_24]
       AdminUser: StackAdmin
       AvailabilityZones: $[taskcat_genaz_2]
+      CreateRDGW: 'No'
       DomainDNSName: example.com
       KeyPairName: $[taskcat_getkeypair]
       NumberOfRDGWHosts: '1'

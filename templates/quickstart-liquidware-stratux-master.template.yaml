@@ -26,6 +26,7 @@ Metadata:
     - Label:
         default: Microsoft Remote Desktop Gateway Configuration
       Parameters:
+      - DeployRDGW
       - NumberOfRDGWHosts
       - AdminUser
       - AdminPassword
@@ -45,6 +46,8 @@ Metadata:
     ParameterLabels:
       AvailabilityZones:
         default: Availability Zones
+      DeployRDGW:
+        default: Deploy RD Gateway
       KeyPairName:
         default: Key Pair Name
       PrivateSubnet1CIDR:
@@ -89,6 +92,13 @@ Parameters:
       two Availability Zones are used for this deployment, and the logical order of
       your selections is preserved.
     Type: List<AWS::EC2::AvailabilityZone::Name>
+  DeployRDGW:
+    Description: Deploy Remote Desktop Gateway
+    Type: String
+    AllowedValues:
+      - 'Yes'
+      - 'No'
+    Default: 'Yes'
   KeyPairName:
     Description: The name of an existing public/private key pair, which allows you
       to securely connect to your instance after it launches
@@ -246,6 +256,7 @@ Parameters:
     Type: Number
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
+  CreateRDGW: !Equals [!Ref DeployRDGW, 'Yes']
   GovCloudCondition: !Equals
    - !Ref AWS::Region
    - us-gov-west-1
@@ -318,6 +329,7 @@ Resources:
             Ref: StratUXInstanceType
   RDGWStack:
     DependsOn: VPCStack
+    Condition: CreateRDGW
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL:
